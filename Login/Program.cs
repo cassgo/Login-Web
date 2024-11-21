@@ -1,41 +1,38 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 添加 Razor 页面服务
+// 添加 Razor 页面和身份验证服务
 builder.Services.AddControllersWithViews();
 
-// 添加身份验证服务，使用 JWT Bearer 和 Keycloak 配置
+// 配置身份验证
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = "CookieAuth"; // 默认使用 Cookie
-    options.DefaultChallengeScheme = "oidc";          // 挑战时使用 OIDC
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
 })
-.AddCookie("CookieAuth", options =>
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
-    options.Cookie.Name = "UserLoginCookie";
-    options.LoginPath = "/Account/Login";
-})
-.AddOpenIdConnect("oidc", options =>
-{
-    options.Authority = "http://localhost:8080/realms/myrealm"; // Keycloak 服务器地址
-    options.ClientId = "myclient";                              // Keycloak Client ID
-    options.ClientSecret = "FCIXFynpcqvUJPIcnu3aO4goE1obvPp4";  // Keycloak Client Secret
-    options.ResponseType = "code";                              // 使用 Authorization Code Flow
-    options.GetClaimsFromUserInfoEndpoint = true;               // 从用户信息端点获取 Claims
-    options.SaveTokens = true;                                  // 保存访问和刷新令牌
+    options.Authority = "http://localhost:8080/realms/myrealm"; // 使用 http 协议
+    options.ClientId = "myclient";
+    options.ClientSecret = "FCIXFynpcqvUJPIcnu3aO4goE1obvPp4";
+    options.ResponseType = "code";
+    options.SaveTokens = true;
+    options.Scope.Add("openid");
+    options.Scope.Add("profile");
+    options.Scope.Add("email");
 
-    // 配置 Token 验证
-    options.TokenValidationParameters.ValidateAudience = true;
-    options.TokenValidationParameters.ValidAudience = "myclient"; // 与 Keycloak Client ID 匹配
-    options.TokenValidationParameters.ValidateIssuer = true;
-    options.TokenValidationParameters.ValidIssuer = "http://localhost:8080/realms/myrealm";
+    // 禁用 HTTPS 要求
+    options.RequireHttpsMetadata = false;
 });
 
 var app = builder.Build();
 
+// 配置中间件
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
