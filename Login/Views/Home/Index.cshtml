@@ -1,8 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "主页";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2>欢迎，@User.Identity.Name！</h2>
+<p>您已成功登录。</p>
+
+<form method="post" action="/Account/Logout">
+    <button type="submit">登出</button>
+</form>

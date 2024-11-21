@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "µÇÂ¼";
+}
+
+<h2>µÇÂ¼</h2>
+
+<form method="post">
+    <div>
+        <label for="username">ÓÃ»§Ãû£º</label>
+        <input type="text" id="username" name="username" required />
+    </div>
+    <div>
+        <label for="password">ÃÜÂë£º</label>
+        <input type="password" id="password" name="password" required />
+    </div>
+    <div>
+        <button type="submit">µÇÂ¼</button>
+    </div>
+    @if (ViewBag.Error != null)
+    {
+        <p style="color:red;">@ViewBag.Error</p>
+    }
+</form>
