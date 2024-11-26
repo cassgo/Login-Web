@@ -5,7 +5,7 @@ VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Login", "Login\Login.csproj", "{EECEFAA3-F235-4CC1-9E70-8F58FF7B0DA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logon2", "Logon2\Logon2.csproj", "{B4EF9FFC-8580-4C77-9802-782F271BD886}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Login2", "Logon2\Login2.csproj", "{B4EF9FFC-8580-4C77-9802-782F271BD886}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
