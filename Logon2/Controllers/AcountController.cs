@@ -18,7 +18,19 @@ public class AccountController : Controller
     /// <summary>
     /// 注销功能，支持 GET 和 POST 请求
     /// </summary>
-    [HttpGet]
+    [HttpGet("callback")]
+public IActionResult Callback(string code)
+{
+    if (string.IsNullOrEmpty(code))
+    {
+        return BadRequest("Authorization code is missing.");
+    }
+
+    // 在这里你可以使用授权码获取 Access Token
+    Console.WriteLine($"Authorization Code: {code}");
+    return Ok();
+}
+
     [HttpPost]
     public IActionResult Logout()
     {

@@ -26,14 +26,18 @@ builder.Services.AddAuthentication(options =>
     options.Scope.Add("profile");
     options.Scope.Add("email");
 
-    // 禁用 HTTPS 要求
+    // 禁用 HTTPS 要求，开发环境中可以用 HTTP
     options.RequireHttpsMetadata = false;
 });
 
 var app = builder.Build();
 
 // 配置中间件
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage(); // 开发环境中显示异常页面
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
@@ -45,11 +49,24 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication(); // 启用身份验证中间件
-app.UseAuthorization();
+app.UseAuthorization(); // 启用授权中间件
 
+// 配置默认路由
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// 配置回调路由
+app.MapGet("/callback", (HttpContext context) =>
+{
+    // 获取回调中的授权码
+    var code = context.Request.Query["code"];
+    if (!string.IsNullOrEmpty(code))
+    {
+        // 在这里使用授权码获取 Token
+        return Results.Ok($"Received authorization code: {code}");
+    }
+    return Results.BadRequest("Authorization code missing.");
+});
+
 app.Run();
-    
